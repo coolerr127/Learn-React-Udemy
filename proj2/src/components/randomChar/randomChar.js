@@ -6,10 +6,6 @@ import PropTypes from 'prop-types'
 import ErrorMessage from '../errorMessage'
 
 export default class RandomChar extends Component {
-	constructor() {
-		super()
-		this.updateCharacter()
-	}
 
 	gotService = new GotService()
 
@@ -17,6 +13,15 @@ export default class RandomChar extends Component {
 		character: {},
 		loading: true,
 		error: false,
+	}
+
+	componentDidMount() {
+		this.updateCharacter()
+		this.timerId = setInterval(this.updateCharacter, 3000)
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.timerId)
 	}
 
 	onCharacterLoaded = character =>
@@ -29,7 +34,7 @@ export default class RandomChar extends Component {
 		})
 	}
 
-	updateCharacter() {
+	updateCharacter = () => {
 		const id = Math.floor(Math.random() * 140 + 25) //25-100
 		// const id = 1000000
 		this.gotService
@@ -42,8 +47,10 @@ export default class RandomChar extends Component {
 		const { character, loading, error } = this.state
 
 		const errorMessage = error ? <ErrorMessage /> : null
-		const spinner = loading ? <Spinner/> : null
-		const content = !(loading || error) ? <View character={character} /> : null 
+		const spinner = loading ? <Spinner /> : null
+		const content = !(loading || error) ? (
+			<View character={character} />
+		) : null
 
 		return (
 			<div className='random-block rounded'>

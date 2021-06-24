@@ -1,33 +1,54 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Col, Row, Container } from 'reactstrap'
 import Header from '../header'
 import RandomChar from '../randomChar'
-import ItemList from '../itemList'
-import CharDetails from '../charDetails'
+import ErrorMessage from '../errorMessage'
+import CharacterPage from '../characterPage'
+import './app.css'
 
-const App = () => {
-	return (
-		<>
-			<Container>
-				<Header />
-			</Container>
-			<Container>
-				<Row>
-					<Col lg={{ size: 5, offset: 0 }}>
-						<RandomChar />
-					</Col>
-				</Row>
-				<Row>
-					<Col md='6'>
-						<ItemList />
-					</Col>
-					<Col md='6'>
-						<CharDetails />
-					</Col>
-				</Row>
-			</Container>
-		</>
-	)
+export default class App extends Component {
+	state = {
+		showRandomCharacter: true,
+		error: false,
+	}
+
+	componentDidCatch() {
+		this.setState({ error: true })
+	}
+
+	toggleRandomCharacter = () => {
+		this.setState({
+			showRandomCharacter: !this.state.showRandomCharacter,
+		})
+	}
+
+	render() {
+		if (this.state.error) {
+			return <ErrorMessage />
+		}
+
+		const character = this.state.showRandomCharacter ? <RandomChar /> : null
+
+		return (
+			<>
+				<Container>
+					<Header />
+				</Container>
+				<Container>
+					<Row>
+						<Col lg={{ size: 5, offset: 0 }}>
+							{character}
+							<button
+								className='toggle-btn'
+								onClick={this.toggleRandomCharacter}
+							>
+								ToggleRandomCharacter
+							</button>
+						</Col>
+					</Row>
+					<CharacterPage />
+				</Container>
+			</>
+		)
+	}
 }
-
-export default App
