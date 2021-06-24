@@ -3,7 +3,7 @@ export default class GotService {
 		this._apiBase = 'https://anapioficeandfire.com/api'
 	}
 
-	async getResurce(url) {
+	getResurce = async (url) => {
 		const res = await fetch(`${this._apiBase}${url}`)
 
 		if (!res.ok) {
@@ -13,39 +13,39 @@ export default class GotService {
 		return await res.json()
 	}
 
-	async getAllCharacters() {
+	getAllCharacters = async () => {
 		const characters = await this.getResurce(
 			'/characters?page=5&pageSize=10'
 		)
 		return characters.map(this._transformCharacter)
 	}
 
-	async getCharacter(id) {
+	getCharacter = async (id) => {
 		const character = await this.getResurce(`/characters/${id}`)
 		return this._transformCharacter(character)
 	}
 
-	async getAllBooks() {
+	getAllBooks = async () => {
 		const books = await this.getResurce('/books?page=3&pageSize=10')
 		return books.map(this._transformBook)
 	}
 
-	async getBook(id) {
+	getBook = async (id) => {
 		const book = await this.getResurce(`/books/${id}`)
 		return this._transformBook(book)
 	}
 
-	async getAllHouses() {
+	getAllHouses = async () => {
 		const houses = await this.getResurce('/houses?page=3&pageSize=10')
 		return houses.map(this._transformHouse)
 	}
 
-	async getHouse(id) {
+	getHouse = async (id) => {
 		const house = await this.getResurce(`/houses/${id}`)
 		return this._transformHouse(house)
 	}
 
-	isSet(data) {
+	isSet = (data) => {
 		if (data) {
 			return data
 		} else {
@@ -69,7 +69,7 @@ export default class GotService {
 		}
 	}
 
-	_transformHouse(house) {
+	_transformHouse = (house) => {
 		return {
 			id: this._extractId(house),
 			name: this.isSet(house.name),
@@ -81,7 +81,7 @@ export default class GotService {
 		}
 	}
 
-	_transformBook(book) {
+	_transformBook = (book) => {
 		return {
 			id: this._extractId(book),
 			name: this.isSet(book.name),

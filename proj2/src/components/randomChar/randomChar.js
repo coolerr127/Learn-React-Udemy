@@ -1,31 +1,33 @@
 import React, { Component } from 'react'
 import './randomChar.css'
-import GotService from '../../services/gotService'
+import gotService from '../../services/gotService'
 import Spinner from '../spinner'
-import PropTypes from 'prop-types'
 import ErrorMessage from '../errorMessage'
+import PropTypes from 'prop-types'
 
 export default class RandomChar extends Component {
-
-	gotService = new GotService()
-
+	gotService = new gotService()
 	state = {
-		character: {},
+		char: {},
 		loading: true,
 		error: false,
 	}
 
 	componentDidMount() {
-		this.updateCharacter()
-		this.timerId = setInterval(this.updateCharacter, 3000)
+		this.updateChar()
+		this.timerId = setInterval(this.updateChar, 15000)
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timerId)
 	}
 
-	onCharacterLoaded = character =>
-		this.setState({ character, loading: false })
+	onCharLoaded = char => {
+		this.setState({
+			char,
+			loading: false,
+		})
+	}
 
 	onError = () => {
 		this.setState({
@@ -34,23 +36,20 @@ export default class RandomChar extends Component {
 		})
 	}
 
-	updateCharacter = () => {
-		const id = Math.floor(Math.random() * 140 + 25) //25-100
-		// const id = 1000000
+	updateChar = () => {
+		const id = Math.floor(Math.random() * 140 + 25) //25-140
 		this.gotService
 			.getCharacter(id)
-			.then(this.onCharacterLoaded)
+			.then(this.onCharLoaded)
 			.catch(this.onError)
 	}
 
 	render() {
-		const { character, loading, error } = this.state
+		const { char, loading, error } = this.state
 
 		const errorMessage = error ? <ErrorMessage /> : null
 		const spinner = loading ? <Spinner /> : null
-		const content = !(loading || error) ? (
-			<View character={character} />
-		) : null
+		const content = !(loading || error) ? <View char={char} /> : null
 
 		return (
 			<div className='random-block rounded'>
@@ -61,9 +60,8 @@ export default class RandomChar extends Component {
 		)
 	}
 }
-
-const View = ({ character }) => {
-	const { name, gender, born, died, culture } = character
+const View = ({ char }) => {
+	const { name, gender, born, died, culture } = char
 	return (
 		<>
 			<h4>Random Character: {name}</h4>
@@ -90,5 +88,5 @@ const View = ({ character }) => {
 }
 
 View.propTypes = {
-	character: PropTypes.object,
+	char: PropTypes.object,
 }

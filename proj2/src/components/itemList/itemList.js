@@ -1,78 +1,57 @@
 import React, { Component } from 'react'
 import './itemList.css'
-import GotService from '../../services/gotService'
 import Spinner from '../spinner'
 import PropTypes from 'prop-types'
-import ErrorMessage from '../errorMessage'
+
 
 export default class ItemList extends Component {
-	gotService = new GotService()
-
 	state = {
-		charList: null,
-		error: false,
+		itemList: null,
 	}
 
 	componentDidMount() {
-		this.gotService
-			.getAllCharacters()
-			.then(charList => {
-				this.setState({
-					charList,
-					error: false,
-				})
-			})
-			.catch(() => {
-				this.onError()
-			})
-	}
+		const { getData } = this.props
 
-	componentDidCatch() {
-		this.setState({
-			charList: null,
-			error: true,
-		})
-	}
-
-	onError() {
-		this.setState({
-			charList: null,
-			error: true,
+		getData().then(itemList => {
+			this.setState({
+				itemList,
+			})
 		})
 	}
 
 	renderItems(arr) {
 		return arr.map(item => {
-			const { id, name } = item
+			const { id } = item
+
+			const label = this.props.renderItem(item)
+
 			return (
 				<li
 					key={id}
 					className='list-group-item'
-					onClick={() => this.props.onCharSelected(id)}
+					onClick={() => this.props.onItemSelected(id)}
 				>
-					{name}
+					{label}
 				</li>
 			)
 		})
 	}
 
 	render() {
-		const { charList, error } = this.state
+		const { itemList } = this.state
 
-		if (error) {
-			return <ErrorMessage />
-		}
-
-		if (!charList) {
+		if (!itemList) {
 			return <Spinner />
 		}
 
-		const items = this.renderItems(charList)
+		const items = this.renderItems(itemList)
 
 		return <ul className='item-list list-group'>{items}</ul>
 	}
 }
 
 ItemList.propTypes = {
-	onCharSelected: PropTypes.func,
+	getData: PropTypes.func,
+	renderItem: PropTypes.func,
+	onItemSelected: PropTypes.func,
 }
