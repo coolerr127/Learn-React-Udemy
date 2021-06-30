@@ -4,6 +4,11 @@ import { connect } from 'react-redux'
 import { deleteFromCart } from '../../actions'
 
 const CartTable = ({ items, deleteFromCart }) => {
+	if (items.length === 0) {
+		return (
+			<div className='cart__title'>Ваша корзина пуста :(</div>
+		)
+	}
 	return (
 		<>
 			<div className='cart__title'>Ваш заказ:</div>
